@@ -1,17 +1,12 @@
 package com.example.ttlcacheimplimentation.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 public class CommandLine {
 
-    private String count;
     @NotBlank
     private String strLine;
 }

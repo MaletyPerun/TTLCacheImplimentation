@@ -1,7 +1,9 @@
 package com.example.ttlcacheimplimentation.util;
 
 import com.example.ttlcacheimplimentation.model.TTLObject;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class Util {
 
     public static long getTimeStamp(){

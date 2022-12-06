@@ -1,4 +1,4 @@
-package com.example.ttlcacheimplimentation.database;
+package com.example.ttlcacheimplimentation.repository;
 
 import com.example.ttlcacheimplimentation.model.TTLObject;
 
@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class CashStore {
-    private ConcurrentMap<String, TTLObject> cacheMap;
+    private final ConcurrentMap<String, TTLObject> cacheMap;
 
     public CashStore() {
         this.cacheMap = new ConcurrentHashMap<>();
@@ -22,20 +22,19 @@ public class CashStore {
     }
 
     public Set<String> getKeys(String key) {
-        Collection<TTLObject> valuesOfCacheMap = cacheMap.values();
-        Set<String> mathes = new HashSet<>();
-        for (TTLObject x : valuesOfCacheMap) {
-            String[] strMessage = x.getObject().split(" ");
-            for (String str : strMessage) {
-                if (str.contains(key))
-                    mathes.add(str);
-            }
+        Set<String> matches = new HashSet<>();
+        // TODO: 06/12/2022 вернуть сразу список по паттерну Case sensitive
+        Collection<String> keysOfCacheMap = cacheMap.keySet();
+        for (String x : keysOfCacheMap) {
+                if (x.contains(key))
+                    matches.add(x);
         }
-        return !mathes.isEmpty()? mathes : null;
+        return matches;
     }
 
     public String delete(String key) {
 //        TTLObject deletedObj = cacheMap.remove(key);
         return cacheMap.remove(key) != null ? key : null;
+        // TODO: 06/12/2022 исключить возврат null
     }
 }

@@ -1,8 +1,9 @@
 package com.example.ttlcacheimplimentation.controller;
 
 import com.example.ttlcacheimplimentation.model.CommandLine;
-import com.example.ttlcacheimplimentation.database.MyCache;
+import com.example.ttlcacheimplimentation.repository.MyCache;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -11,13 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class Controller {
+@RequiredArgsConstructor
+public class CacheController {
 
     // GET+, SET+, DEL+, KEYS+
-    @Autowired
-    private MyCache cache;
+    private final MyCache cache;
+
+    // TODO: 06/12/2022 добавить обработку исключений и валидацию
 
     @GetMapping("GET")
     public String getCache(@RequestParam String key) {
