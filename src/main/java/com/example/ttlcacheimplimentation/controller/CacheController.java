@@ -15,8 +15,6 @@ import javax.validation.Valid;
 @RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class CacheController {
-
-    // GET+, SET+, DEL+, KEYS+
     private final MyCache cache;
 
     // TODO: 06/12/2022 добавить обработку исключений и валидацию
