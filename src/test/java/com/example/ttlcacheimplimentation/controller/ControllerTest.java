@@ -29,37 +29,39 @@ class ControllerTest {
 
 
     @Test
-    public void getCacheTest() {
+    void getCacheTest() {
         cache.add(SET_STRING_1);
         ResponseEntity<String> response = restTemplate.exchange("/GET?key=" + GET_STRING, HttpMethod.GET, null, String.class);
-        assertEquals(response.getBody(), GET_RESPONCE);
+        assertEquals(GET_RESPONSE, response.getBody());
     }
 
     @Test
-    public void getListOfKeysTest() {
+    void getListOfKeysTest() {
         cache.add(SET_STRING_4);
+        cache.add(SET_STRING_5);
         ResponseEntity<String> response = restTemplate.exchange("/KEYS?key=" + KEYS_STRING, HttpMethod.GET, null, String.class);
-        assertEquals(response.getBody(), KEYS_RESPONCE.toString());
+        assertEquals(response.getBody(), KEYS_RESPONSE.toString());
     }
 
     @Test
-    public void setObjectTest() {
+    void setObjectTest() {
         HttpHeaders headers = new HttpHeaders();
+        COMMAND_LINE.setStrLine(SET_STRING_2);
         ResponseEntity<String> response = restTemplate.exchange("/SET" , HttpMethod.POST, new HttpEntity<>(COMMAND_LINE, headers), String.class);
-        assertEquals(response.getBody(), SET_RESPONCE);
+        assertEquals(SET_RESPONSE, response.getBody());
     }
 
     @Test
-    public void deleteObjectTest() {
+    void deleteObjectTest() {
         ResponseEntity<String> response = restTemplate.exchange("/DEL?key=" + DELETE_STRING, HttpMethod.DELETE, null, String.class);
-        assertEquals(response.getBody(), DELETE_RESPONCE);
+        assertEquals(DELETE_RESPONSE, response.getBody());
     }
 
     @Test
-    public void autoDeleteCache() throws InterruptedException {
+    void autoDeleteCache() throws InterruptedException {
         cache.add(SET_STRING_5);
         Thread.sleep(11_000);
         ResponseEntity<String> response = restTemplate.exchange("/GET?key=" + GET_STRING_5, HttpMethod.GET, null, String.class);
-        assertEquals(response.getBody(), null);
+        assertEquals(null, response.getBody());
     }
 }

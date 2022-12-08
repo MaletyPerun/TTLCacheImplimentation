@@ -1,58 +1,70 @@
 package com.example.ttlcacheimplimentation.repository;
 
+import com.example.ttlcacheimplimentation.dto.TTLObjectDTO;
 import com.example.ttlcacheimplimentation.model.KeyTimeObject;
 import com.example.ttlcacheimplimentation.model.TTLObject;
-import com.example.ttlcacheimplimentation.util.Util;
+import com.example.ttlcacheimplimentation.util.TimeUtil;
+import com.example.ttlcacheimplimentation.util.UtilDTO;
+import com.example.ttlcacheimplimentation.util.ValidationUtil;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotNull;
+
 @Component
+@EnableScheduling
 public class MyCache {
 
-    private static final long TTL = 20_000;        // 20 sec
+    private static final long TTL = 10_000;        // 2 sec
     private static final long PERIOD_TIME = 1_000; // 1 sec
 
     private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
 
-    private final PriorityQueue<KeyTimeObject> keyTimeQueue = new PriorityQueue<>((o1, o2) -> (int) (o1.timeToLive - o2.timeToLive));
-    // TODO: 06/12/2022 использовать BlockingQueue при работе с многопоточной очередью
+    private final BlockingQueue<KeyTimeObject> keyTimeQueue = new LinkedBlockingQueue<>();
     private final CashStore store;
 
     public MyCache() {
         this.store = new CashStore();
     }
 
-    public String get(String key) {
+    public TTLObjectDTO get(String key) {
         Lock readLock = rwlock.readLock();
         readLock.lock();
-        String object;
+        TTLObject object;
         try {
             object = store.get(key);
         } finally {
             readLock.unlock();
         }
-        return object;
-        // TODO: 08/12/2022 обработка на null
+        checkNotNull(object, key);
+        return UtilDTO.createNewObjectDTO(object);
     }
 
     public void add(String strLine) {
-        TTLObject ttlObject = Util.createTtlObjcet(strLine);
-        KeyTimeObject keyTimeObject = new KeyTimeObject(ttlObject.getKey(), ttlObject.getTimeStamp());
+        // TODO: 08/12/2022 добавить установку ttl
+        String key = strLine.split(" ")[0];
+        int lenOfKey = key.length();
+        String obj = strLine.substring(lenOfKey + 1).trim();
+
+        TTLObject ttlObject = new TTLObject(obj, TimeUtil.getTimeStamp());
+        KeyTimeObject keyTimeObject = new KeyTimeObject(key, ttlObject.getTimeStamp());
+
         Lock writeLock = rwlock.writeLock();
         writeLock.lock();
         try {
             keyTimeQueue.add(keyTimeObject);
-            store.add(ttlObject);
+            store.add(key, ttlObject);
         } finally {
             writeLock.unlock();
         }
-
     }
 
     public Set<String> getKeys(String key) {
@@ -64,21 +76,19 @@ public class MyCache {
         } finally {
             readLock.unlock();
         }
-        return set;
-        // TODO: 06/12/2022 обработка пустого списка set
+        return checkNotNull(set, key);
     }
 
-    public String delete(String key) {
+    public TTLObject delete(String key) {
         Lock writeLock = rwlock.writeLock();
-        String object;
+        TTLObject object;
         writeLock.lock();
         try {
             object = store.delete(key);
         } finally {
             writeLock.unlock();
         }
-        return object;
-        // TODO: 08/12/2022 обработка на null 
+        return checkNotNull(object, key);
     }
 
 
@@ -86,7 +96,7 @@ public class MyCache {
     private void autoEvict() {
         // TODO: 08/12/2022 обработка исключения на пустой объект
         if (!keyTimeQueue.isEmpty() &&
-                keyTimeQueue.peek().timeToLive <= Util.getTimeStamp(TTL)) {
+                keyTimeQueue.peek().getTimeToLive() <= TimeUtil.getTimeStamp(TTL)) {
             KeyTimeObject keyTimeObject = keyTimeQueue.poll();
             store.delete(keyTimeObject.getCacheKey());
         }

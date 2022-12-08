@@ -5,6 +5,8 @@ import com.example.ttlcacheimplimentation.model.TTLObject;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CashStore {
     private final ConcurrentMap<String, TTLObject> cacheMap;
@@ -13,28 +15,27 @@ public class CashStore {
         this.cacheMap = new ConcurrentHashMap<>();
     }
 
-    public String get(String key) {
-        return cacheMap.containsKey(key) ? cacheMap.get(key).getObject() : null;
+    public TTLObject get(String key) {
+        return cacheMap.get(key);
     }
 
-    public TTLObject add(TTLObject ttlObject) {
-        return cacheMap.put(ttlObject.getKey(), ttlObject);
+    public TTLObject add(String key, TTLObject ttlObject) {
+        return cacheMap.put(key, ttlObject);
     }
 
     public Set<String> getKeys(String key) {
         Set<String> matches = new HashSet<>();
-        // TODO: 06/12/2022 вернуть сразу список по паттерну Case sensitive
         Collection<String> keysOfCacheMap = cacheMap.keySet();
+        Pattern pattern = Pattern.compile(".*" + key + ".*", Pattern.CASE_INSENSITIVE);
         for (String x : keysOfCacheMap) {
-                if (x.contains(key))
-                    matches.add(x);
+            Matcher matcher = pattern.matcher(x);
+            if (matcher.matches())
+                matches.add(x);
         }
         return matches;
     }
 
-    public String delete(String key) {
-//        TTLObject deletedObj = cacheMap.remove(key);
-        return cacheMap.remove(key) != null ? key : null;
-        // TODO: 06/12/2022 исключить возврат null
+    public TTLObject delete(String key) {
+        return cacheMap.remove(key);
     }
 }

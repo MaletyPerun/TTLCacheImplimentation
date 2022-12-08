@@ -1,17 +1,12 @@
 package com.example.ttlcacheimplimentation.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class TTLObject {
 
-    public String key;
-    public String object;
-    public long timeStamp;
-
-    public TTLObject(String key, String object, long timeStamp) {
-        this.key = key;
-        this.object = object;
-        this.timeStamp = timeStamp;
-    }
+    private String object;
+    private long timeStamp;
 }
