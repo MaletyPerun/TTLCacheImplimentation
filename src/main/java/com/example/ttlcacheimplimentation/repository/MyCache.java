@@ -4,8 +4,7 @@ import com.example.ttlcacheimplimentation.dto.TTLObjectDTO;
 import com.example.ttlcacheimplimentation.model.KeyTimeObject;
 import com.example.ttlcacheimplimentation.model.TTLObject;
 import com.example.ttlcacheimplimentation.util.TimeUtil;
-import com.example.ttlcacheimplimentation.util.UtilDTO;
-import com.example.ttlcacheimplimentation.util.ValidationUtil;
+import com.example.ttlcacheimplimentation.util.TTLObjectUtil;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -45,7 +44,7 @@ public class MyCache {
             readLock.unlock();
         }
         checkNotNull(object, key);
-        return UtilDTO.createNewObjectDTO(object);
+        return TTLObjectUtil.createNewObjectDTO(object);
     }
 
     public void add(String strLine) {
@@ -79,7 +78,7 @@ public class MyCache {
         return checkNotNull(set, key);
     }
 
-    public TTLObject delete(String key) {
+    public void delete(String key) {
         Lock writeLock = rwlock.writeLock();
         TTLObject object;
         writeLock.lock();
@@ -88,13 +87,12 @@ public class MyCache {
         } finally {
             writeLock.unlock();
         }
-        return checkNotNull(object, key);
+        checkNotNull(object, key);
     }
 
 
     @Scheduled(fixedDelay = PERIOD_TIME)
     private void autoEvict() {
-        // TODO: 08/12/2022 обработка исключения на пустой объект
         if (!keyTimeQueue.isEmpty() &&
                 keyTimeQueue.peek().getTimeToLive() <= TimeUtil.getTimeStamp(TTL)) {
             KeyTimeObject keyTimeObject = keyTimeQueue.poll();

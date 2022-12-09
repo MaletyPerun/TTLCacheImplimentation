@@ -5,7 +5,7 @@ import com.example.ttlcacheimplimentation.model.TTLObject;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class UtilDTO {
+public class TTLObjectUtil {
 
     public static TTLObjectDTO createNewObjectDTO(TTLObject object) {
         return new TTLObjectDTO(object.getObject());

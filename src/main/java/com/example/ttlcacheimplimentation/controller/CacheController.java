@@ -18,8 +18,6 @@ import java.util.List;
 public class CacheController {
     private final MyCache cache;
 
-    // TODO: 06/12/2022 добавить обработку исключений и валидацию
-
     @GetMapping("GET")
     public ResponseEntity<TTLObjectDTO> getCache(@RequestParam String key) {
         return ResponseEntity.ok(cache.get(key));

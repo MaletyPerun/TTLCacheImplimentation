@@ -8,7 +8,7 @@ public class ValidationUtil {
 
     public static <T> T checkNotNull(T object, String key) {
         if (object == null)
-            throw new NotFoundException("Not found keys/object with key = " + key);
+            throw new NotFoundException("Not found keys/object with key: " + key);
         return object;
     }
 }
