@@ -22,7 +22,7 @@ import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotNul
 @EnableScheduling
 public class MyCache {
 
-    private static final long TTL = 10_000;        // 2 sec
+    private static final long TTL = 2_000;        // 2 sec
     private static final long PERIOD_TIME = 1_000; // 1 sec
 
     private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
@@ -48,7 +48,6 @@ public class MyCache {
     }
 
     public void add(String strLine) {
-        // TODO: 08/12/2022 добавить установку ttl
         String key = strLine.split(" ")[0];
         int lenOfKey = key.length();
         String obj = strLine.substring(lenOfKey + 1).trim();
@@ -97,6 +96,17 @@ public class MyCache {
                 keyTimeQueue.peek().getTimeToLive() <= TimeUtil.getTimeStamp(TTL)) {
             KeyTimeObject keyTimeObject = keyTimeQueue.poll();
             store.delete(keyTimeObject.getCacheKey());
+        }
+    }
+
+    public void clearAllCache(){
+        Lock writeLock = rwlock.writeLock();
+        writeLock.lock();
+        try {
+            keyTimeQueue.clear();
+            store.clear();
+        } finally {
+            writeLock.unlock();
         }
     }
 }

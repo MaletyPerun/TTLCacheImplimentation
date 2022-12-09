@@ -38,4 +38,8 @@ public class CashStore {
     public TTLObject delete(String key) {
         return cacheMap.remove(key);
     }
+
+    public void clear() {
+        cacheMap.clear();
+    }
 }
