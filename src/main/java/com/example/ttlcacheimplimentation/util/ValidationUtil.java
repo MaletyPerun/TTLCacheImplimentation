@@ -13,9 +13,14 @@ public class ValidationUtil {
         return object;
     }
 
-    public static String[] checkContent(String[] stringArrayOfCommandLine) {
-        if (stringArrayOfCommandLine.length < 2)
-            throw new NoContentException("Ключ без объекта");
-        return stringArrayOfCommandLine;
+    public static <T> T checkNotNull(T object) {
+        if (object == null)
+            throw new NoContentException("Пустое значение объекта");
+        return object;
+    }
+
+    public static void checkNotBlank(String str) {
+        if (str.isBlank())
+            throw new NotFoundException("Ключ не должен быть пустым");
     }
 }

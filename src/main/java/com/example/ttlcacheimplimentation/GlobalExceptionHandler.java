@@ -33,6 +33,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return createResponseEntity(request, e.getOptions(), e.getMessage(), e.getStatus());
     }
 
+    // TODO: 10/12/2022 отловить конкретную ошибку по пустому значению
+
+
     @NonNull
     @Override
     public ResponseEntity<Object> handleMethodArgumentNotValid(

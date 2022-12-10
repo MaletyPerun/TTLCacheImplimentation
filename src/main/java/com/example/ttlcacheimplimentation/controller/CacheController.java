@@ -2,9 +2,10 @@ package com.example.ttlcacheimplimentation.controller;
 
 import com.example.ttlcacheimplimentation.dto.TTLObjectDto;
 import com.example.ttlcacheimplimentation.model.CommandLine;
-import com.example.ttlcacheimplimentation.repository.MyCache;
+import com.example.ttlcacheimplimentation.service.CachService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotBlank;
+
 @RestController
 @RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class CacheController {
-    private final MyCache cache;
+    private final CachService cache;
 
     @GetMapping("GET")
     public ResponseEntity<TTLObjectDto> getCache(@RequestParam String key) {
@@ -24,19 +27,21 @@ public class CacheController {
     }
 
     @GetMapping("KEYS")
-    public List<String> getListOfKeys(@RequestParam String key) {
-        return List.copyOf(cache.getKeys(key));
+    public ResponseEntity<List<String>> getListOfKeys(@RequestParam String key) {
+        return ResponseEntity.ok(List.copyOf(cache.getKeys(key)));
     }
 
     @PostMapping(value = "SET", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String setObject(@Valid @RequestBody @NotNull CommandLine commandLine) {
-        cache.add(commandLine.getStrLine());
-        return "set " + commandLine.getStrLine();
+    public ResponseEntity<Object> setObject(@RequestParam String key, @Valid @RequestBody @NotNull CommandLine commandLine) {
+        checkNotBlank(key);
+        cache.add(key, commandLine.getStrLine());
+        return new ResponseEntity<>("Установлен ключ: " + key +
+                " со значением: " + commandLine.getStrLine(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("DEL")
-    public String deleteObject(@RequestParam String key) {
-        cache.delete(key);
-        return "Object with key: " + key + " is deleted";
+    public ResponseEntity<Object> deleteObject(@RequestParam String key) {
+        return new ResponseEntity<>("Удален ключ: " + key +
+                " со значением: " + cache.delete(key).getObject(), HttpStatus.OK);
     }
 }

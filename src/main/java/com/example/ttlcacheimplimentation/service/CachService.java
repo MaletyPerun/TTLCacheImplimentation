@@ -1,13 +1,14 @@
-package com.example.ttlcacheimplimentation.repository;
+package com.example.ttlcacheimplimentation.service;
 
 import com.example.ttlcacheimplimentation.dto.TTLObjectDto;
 import com.example.ttlcacheimplimentation.model.KeyTimeObject;
 import com.example.ttlcacheimplimentation.model.TTLObject;
+import com.example.ttlcacheimplimentation.repository.CashStore;
 import com.example.ttlcacheimplimentation.util.TimeUtil;
 import com.example.ttlcacheimplimentation.util.TTLObjectUtil;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -16,14 +17,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkContent;
 import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotNull;
 
-@Component
+@Service
 @EnableScheduling
-public class MyCache {
+public class CachService {
 
-    private static final long TTL = 2_000;        // 2 sec
+    private static final long TTL = 20_000;        // 2 sec
     private static final long PERIOD_TIME = 1_000; // 1 sec
 
     private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
@@ -31,7 +31,7 @@ public class MyCache {
     private final BlockingQueue<KeyTimeObject> keyTimeQueue = new LinkedBlockingQueue<>();
     private final CashStore store;
 
-    public MyCache() {
+    public CachService() {
         this.store = new CashStore();
     }
 
@@ -48,15 +48,8 @@ public class MyCache {
         return TTLObjectUtil.createNewObjectDTO(object);
     }
 
-    public void add(String strLine) {
-        String[] stringArrayOfCommandLine = strLine.split(" ");
-        checkContent(stringArrayOfCommandLine);
-
-        String key = stringArrayOfCommandLine[0];
-        int lenOfKey = key.length();
-        String obj = strLine.substring(lenOfKey + 1).trim();
-
-        TTLObject ttlObject = new TTLObject(obj, TimeUtil.getTimeStamp());
+    public void add(String key, String object) {
+        TTLObject ttlObject = new TTLObject(object, TimeUtil.getTimeStamp());
         KeyTimeObject keyTimeObject = new KeyTimeObject(key, ttlObject.getTimeStamp());
 
         Lock writeLock = rwlock.writeLock();
@@ -81,7 +74,7 @@ public class MyCache {
         return checkNotNull(set, key);
     }
 
-    public void delete(String key) {
+    public TTLObjectDto delete(String key) {
         Lock writeLock = rwlock.writeLock();
         TTLObject object;
         writeLock.lock();
@@ -91,6 +84,7 @@ public class MyCache {
             writeLock.unlock();
         }
         checkNotNull(object, key);
+        return TTLObjectUtil.createNewObjectDTO(object);
     }
 
 
