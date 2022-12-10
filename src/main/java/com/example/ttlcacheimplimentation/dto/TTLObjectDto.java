@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TTLObjectDTO {
+public class TTLObjectDto {
 
     private String object;
 }

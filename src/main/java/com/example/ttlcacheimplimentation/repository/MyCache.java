@@ -1,6 +1,6 @@
 package com.example.ttlcacheimplimentation.repository;
 
-import com.example.ttlcacheimplimentation.dto.TTLObjectDTO;
+import com.example.ttlcacheimplimentation.dto.TTLObjectDto;
 import com.example.ttlcacheimplimentation.model.KeyTimeObject;
 import com.example.ttlcacheimplimentation.model.TTLObject;
 import com.example.ttlcacheimplimentation.util.TimeUtil;
@@ -16,6 +16,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkContent;
 import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotNull;
 
 @Component
@@ -34,7 +35,7 @@ public class MyCache {
         this.store = new CashStore();
     }
 
-    public TTLObjectDTO get(String key) {
+    public TTLObjectDto get(String key) {
         Lock readLock = rwlock.readLock();
         readLock.lock();
         TTLObject object;
@@ -48,6 +49,9 @@ public class MyCache {
     }
 
     public void add(String strLine) {
+        String[] stringArrayOfCommandLine = strLine.split(" ");
+        checkContent(stringArrayOfCommandLine);
+
         String key = strLine.split(" ")[0];
         int lenOfKey = key.length();
         String obj = strLine.substring(lenOfKey + 1).trim();

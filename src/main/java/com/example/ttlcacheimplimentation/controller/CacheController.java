@@ -1,6 +1,6 @@
 package com.example.ttlcacheimplimentation.controller;
 
-import com.example.ttlcacheimplimentation.dto.TTLObjectDTO;
+import com.example.ttlcacheimplimentation.dto.TTLObjectDto;
 import com.example.ttlcacheimplimentation.model.CommandLine;
 import com.example.ttlcacheimplimentation.repository.MyCache;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class CacheController {
     private final MyCache cache;
 
     @GetMapping("GET")
-    public ResponseEntity<TTLObjectDTO> getCache(@RequestParam String key) {
+    public ResponseEntity<TTLObjectDto> getCache(@RequestParam String key) {
         return ResponseEntity.ok(cache.get(key));
     }
 
