@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
-public class UnprocessableEntityException extends AppException {
-    public UnprocessableEntityException(String message) {
+public class NoContentException extends AppException {
+    public NoContentException(String message) {
         super(HttpStatus.NO_CONTENT, message, ErrorAttributeOptions.of(MESSAGE));
     }
 }

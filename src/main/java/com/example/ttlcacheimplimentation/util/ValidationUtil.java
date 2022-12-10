@@ -1,7 +1,7 @@
 package com.example.ttlcacheimplimentation.util;
 
 import com.example.ttlcacheimplimentation.error.NotFoundException;
-import com.example.ttlcacheimplimentation.error.UnprocessableEntityException;
+import com.example.ttlcacheimplimentation.error.NoContentException;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -15,7 +15,7 @@ public class ValidationUtil {
 
     public static String[] checkContent(String[] stringArrayOfCommandLine) {
         if (stringArrayOfCommandLine.length < 2)
-            throw new UnprocessableEntityException("Ключ без объекта");
+            throw new NoContentException("Ключ без объекта");
         return stringArrayOfCommandLine;
     }
 }

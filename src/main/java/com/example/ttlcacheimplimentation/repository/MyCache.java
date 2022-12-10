@@ -52,7 +52,7 @@ public class MyCache {
         String[] stringArrayOfCommandLine = strLine.split(" ");
         checkContent(stringArrayOfCommandLine);
 
-        String key = strLine.split(" ")[0];
+        String key = stringArrayOfCommandLine[0];
         int lenOfKey = key.length();
         String obj = strLine.substring(lenOfKey + 1).trim();
 
