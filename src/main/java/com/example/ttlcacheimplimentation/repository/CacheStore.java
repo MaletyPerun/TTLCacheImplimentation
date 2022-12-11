@@ -1,6 +1,7 @@
 package com.example.ttlcacheimplimentation.repository;
 
 import com.example.ttlcacheimplimentation.model.TTLObject;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,10 +9,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CashStore {
+@Repository
+public class CacheStore {
     private final ConcurrentMap<String, TTLObject> cacheMap;
 
-    public CashStore() {
+    public CacheStore() {
         this.cacheMap = new ConcurrentHashMap<>();
     }
 

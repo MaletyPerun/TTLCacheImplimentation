@@ -1,6 +1,5 @@
 package com.example.ttlcacheimplimentation.controller;
 
-import com.example.ttlcacheimplimentation.model.CommandLine;
 import java.util.List;
 
 public class ControllerTestData {
@@ -14,5 +13,4 @@ public class ControllerTestData {
     public static final String SET_RESPONSE = "set test1 Price-list of new cars";
     public static final String DELETE_KEY = "test1";
     public static final String DELETE_RESPONSE = "Object with key: " + DELETE_KEY + " is deleted";
-    public static final CommandLine COMMAND_LINE = new CommandLine();
 }

@@ -18,12 +18,14 @@ class ControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private CacheService cache;
+    private CacheService cacheService;
+
+
 
 
     @AfterEach
     void evict(){
-        cache.clearAllCache();
+        cacheService.clearAllCache();
     }
 
 

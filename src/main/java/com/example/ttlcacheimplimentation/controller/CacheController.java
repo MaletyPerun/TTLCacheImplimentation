@@ -1,6 +1,7 @@
 package com.example.ttlcacheimplimentation.controller;
 
 import com.example.ttlcacheimplimentation.dto.TTLObjectDto;
+import com.example.ttlcacheimplimentation.model.TTLObject;
 import com.example.ttlcacheimplimentation.service.CacheService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -35,9 +36,9 @@ public class CacheController {
     @PostMapping(value = "SET", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> setObject(@RequestParam String key, @Valid @RequestBody @NotNull TTLObjectDto ttlObjectDto) {
         checkNotBlank(key);
-        cache.add(key, ttlObjectDto.getValue());
+        TTLObject ttlObject = cache.add(key, ttlObjectDto.getValue());
         return new ResponseEntity<>("Установлен ключ: " + key +
-                " со значением: " + ttlObjectDto.getValue(), HttpStatus.CREATED);
+                " со значением: " + ttlObject.getValue(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("DEL")

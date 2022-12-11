@@ -3,7 +3,7 @@ package com.example.ttlcacheimplimentation.service;
 import com.example.ttlcacheimplimentation.dto.TTLObjectDto;
 import com.example.ttlcacheimplimentation.model.KeyTimeObject;
 import com.example.ttlcacheimplimentation.model.TTLObject;
-import com.example.ttlcacheimplimentation.repository.CashStore;
+import com.example.ttlcacheimplimentation.repository.CacheStore;
 import com.example.ttlcacheimplimentation.util.TimeUtil;
 import com.example.ttlcacheimplimentation.util.TTLObjectUtil;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -29,10 +29,10 @@ public class CacheService {
     private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
 
     private final BlockingQueue<KeyTimeObject> keyTimeQueue = new LinkedBlockingQueue<>();
-    private final CashStore store;
+    private final CacheStore cacheStore;
 
     public CacheService() {
-        this.store = new CashStore();
+        this.cacheStore = new CacheStore();
     }
 
     public TTLObjectDto get(String key) {
@@ -40,7 +40,7 @@ public class CacheService {
         readLock.lock();
         TTLObject ttlObject;
         try {
-            ttlObject = store.get(key);
+            ttlObject = cacheStore.get(key);
         } finally {
             readLock.unlock();
         }
@@ -48,7 +48,7 @@ public class CacheService {
         return TTLObjectUtil.createNewObjectDTO(ttlObject);
     }
 
-    public void add(String key, String value) {
+    public TTLObject add(String key, String value) {
         TTLObject ttlObject = new TTLObject(value, TimeUtil.getTimeStamp());
         KeyTimeObject keyTimeObject = new KeyTimeObject(key, ttlObject.getTimeStamp());
 
@@ -56,10 +56,11 @@ public class CacheService {
         writeLock.lock();
         try {
             keyTimeQueue.add(keyTimeObject);
-            store.add(key, ttlObject);
+            cacheStore.add(key, ttlObject);
         } finally {
             writeLock.unlock();
         }
+        return ttlObject;
     }
 
     public Set<String> getKeys(String key) {
@@ -67,7 +68,7 @@ public class CacheService {
         readLock.lock();
         Set<String> set;
         try {
-            set = store.getKeys(key);
+            set = cacheStore.getKeys(key);
         } finally {
             readLock.unlock();
         }
@@ -79,7 +80,7 @@ public class CacheService {
         TTLObject object;
         writeLock.lock();
         try {
-            object = store.delete(key);
+            object = cacheStore.delete(key);
         } finally {
             writeLock.unlock();
         }
@@ -93,7 +94,7 @@ public class CacheService {
         if (!keyTimeQueue.isEmpty() &&
                 keyTimeQueue.peek().getTimeToLive() <= TimeUtil.getTimeStamp(TTL)) {
             KeyTimeObject keyTimeObject = keyTimeQueue.poll();
-            store.delete(keyTimeObject.getCacheKey());
+            cacheStore.delete(keyTimeObject.getCacheKey());
         }
     }
 
@@ -102,7 +103,7 @@ public class CacheService {
         writeLock.lock();
         try {
             keyTimeQueue.clear();
-            store.clear();
+            cacheStore.clear();
         } finally {
             writeLock.unlock();
         }
