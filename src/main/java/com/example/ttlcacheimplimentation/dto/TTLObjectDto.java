@@ -1,13 +1,16 @@
 package com.example.ttlcacheimplimentation.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
+@Data
 public class TTLObjectDto {
 
+    @NotBlank
     private String object;
 }

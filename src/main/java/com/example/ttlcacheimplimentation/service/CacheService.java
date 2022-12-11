@@ -21,7 +21,7 @@ import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotNul
 
 @Service
 @EnableScheduling
-public class CachService {
+public class CacheService {
 
     private static final long TTL = 20_000;        // 2 sec
     private static final long PERIOD_TIME = 1_000; // 1 sec
@@ -31,21 +31,21 @@ public class CachService {
     private final BlockingQueue<KeyTimeObject> keyTimeQueue = new LinkedBlockingQueue<>();
     private final CashStore store;
 
-    public CachService() {
+    public CacheService() {
         this.store = new CashStore();
     }
 
     public TTLObjectDto get(String key) {
         Lock readLock = rwlock.readLock();
         readLock.lock();
-        TTLObject object;
+        TTLObject ttlObject;
         try {
-            object = store.get(key);
+            ttlObject = store.get(key);
         } finally {
             readLock.unlock();
         }
-        checkNotNull(object, key);
-        return TTLObjectUtil.createNewObjectDTO(object);
+        checkNotNull(ttlObject, key);
+        return TTLObjectUtil.createNewObjectDTO(ttlObject);
     }
 
     public void add(String key, String object) {

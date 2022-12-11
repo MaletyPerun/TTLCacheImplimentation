@@ -1,7 +1,7 @@
 package com.example.ttlcacheimplimentation.util;
 
+import com.example.ttlcacheimplimentation.error.BlankException;
 import com.example.ttlcacheimplimentation.error.NotFoundException;
-import com.example.ttlcacheimplimentation.error.NoContentException;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -13,14 +13,8 @@ public class ValidationUtil {
         return object;
     }
 
-    public static <T> T checkNotNull(T object) {
-        if (object == null)
-            throw new NoContentException("Пустое значение объекта");
-        return object;
-    }
-
-    public static void checkNotBlank(String str) {
-        if (str.isBlank())
-            throw new NotFoundException("Ключ не должен быть пустым");
+    public static void checkNotBlank(String object) {
+        if (object.isBlank())
+            throw new BlankException("Ключ не должен быть пустым");
     }
 }

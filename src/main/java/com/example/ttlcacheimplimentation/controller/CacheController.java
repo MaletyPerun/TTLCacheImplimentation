@@ -1,8 +1,7 @@
 package com.example.ttlcacheimplimentation.controller;
 
 import com.example.ttlcacheimplimentation.dto.TTLObjectDto;
-import com.example.ttlcacheimplimentation.model.CommandLine;
-import com.example.ttlcacheimplimentation.service.CachService;
+import com.example.ttlcacheimplimentation.service.CacheService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotBla
 @RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class CacheController {
-    private final CachService cache;
+    private final CacheService cache;
 
     @GetMapping("GET")
     public ResponseEntity<TTLObjectDto> getCache(@RequestParam String key) {
@@ -32,11 +31,11 @@ public class CacheController {
     }
 
     @PostMapping(value = "SET", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> setObject(@RequestParam String key, @Valid @RequestBody @NotNull CommandLine commandLine) {
+    public ResponseEntity<Object> setObject(@RequestParam String key, @Valid @RequestBody @NotNull TTLObjectDto ttlObjectDto) {
         checkNotBlank(key);
-        cache.add(key, commandLine.getStrLine());
+        cache.add(key, ttlObjectDto.getObject());
         return new ResponseEntity<>("Установлен ключ: " + key +
-                " со значением: " + commandLine.getStrLine(), HttpStatus.CREATED);
+                " со значением: " + ttlObjectDto.getObject(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("DEL")

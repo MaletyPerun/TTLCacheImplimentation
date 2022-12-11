@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
-public class NoContentException extends AppException {
-    public NoContentException(String message) {
-        super(HttpStatus.NO_CONTENT, message, ErrorAttributeOptions.of(MESSAGE));
+public class BlankException extends AppException {
+    public BlankException(String message) {
+        super(HttpStatus.BAD_REQUEST, message, ErrorAttributeOptions.of(MESSAGE));
     }
 }
