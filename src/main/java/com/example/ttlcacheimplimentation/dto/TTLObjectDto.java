@@ -12,5 +12,5 @@ import javax.validation.constraints.NotBlank;
 public class TTLObjectDto {
 
     @NotBlank
-    private String object;
+    private String value;
 }

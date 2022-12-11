@@ -23,7 +23,7 @@ import static com.example.ttlcacheimplimentation.util.ValidationUtil.checkNotNul
 @EnableScheduling
 public class CacheService {
 
-    private static final long TTL = 20_000;        // 2 sec
+    private static final long TTL = 120_000;        // 120 sec
     private static final long PERIOD_TIME = 1_000; // 1 sec
 
     private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
@@ -48,8 +48,8 @@ public class CacheService {
         return TTLObjectUtil.createNewObjectDTO(ttlObject);
     }
 
-    public void add(String key, String object) {
-        TTLObject ttlObject = new TTLObject(object, TimeUtil.getTimeStamp());
+    public void add(String key, String value) {
+        TTLObject ttlObject = new TTLObject(value, TimeUtil.getTimeStamp());
         KeyTimeObject keyTimeObject = new KeyTimeObject(key, ttlObject.getTimeStamp());
 
         Lock writeLock = rwlock.writeLock();

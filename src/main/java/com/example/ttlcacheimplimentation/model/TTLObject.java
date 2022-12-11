@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TTLObject {
 
-    private String object;
+    private String value;
     private long timeStamp;
 }

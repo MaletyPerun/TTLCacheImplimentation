@@ -27,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     protected ResponseEntity<Object> handleConflict(WebRequest request, NotFoundException e) {
-        return createResponseEntity(request, ErrorAttributeOptions.defaults(), e.getMessage(), HttpStatus.NOT_FOUND);
+        return createResponseEntity(request, e.getOptions(), e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BlankException.class)
@@ -47,9 +47,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @SuppressWarnings("unchecked")
     protected <T> ResponseEntity<T> createResponseEntity(WebRequest request, ErrorAttributeOptions options, String msg, HttpStatus status) {
         Map<String, Object> body = errorAttributes.getErrorAttributes(request, options);
-        if (msg != null) {
-            body.put("message", msg);
-        }
+        body.put("message", msg);
         body.put("status", status.value());
         body.put("error", status.getReasonPhrase());
         return (ResponseEntity<T>) ResponseEntity.status(status).body(body);

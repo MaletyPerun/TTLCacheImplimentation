@@ -9,7 +9,7 @@ public class TTLObjectUtil {
 
     public static TTLObjectDto createNewObjectDTO(TTLObject ttlObject) {
         TTLObjectDto ttlObjectDto = new TTLObjectDto();
-        new TTLObjectDto().setObject(ttlObject.getObject());
+        ttlObjectDto.setValue(ttlObject.getValue());
         return ttlObjectDto;
     }
 }

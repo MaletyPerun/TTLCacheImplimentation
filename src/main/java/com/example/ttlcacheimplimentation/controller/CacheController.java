@@ -22,25 +22,28 @@ public class CacheController {
 
     @GetMapping("GET")
     public ResponseEntity<TTLObjectDto> getCache(@RequestParam String key) {
+        checkNotBlank(key);
         return ResponseEntity.ok(cache.get(key));
     }
 
     @GetMapping("KEYS")
     public ResponseEntity<List<String>> getListOfKeys(@RequestParam String key) {
+        checkNotBlank(key);
         return ResponseEntity.ok(List.copyOf(cache.getKeys(key)));
     }
 
     @PostMapping(value = "SET", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> setObject(@RequestParam String key, @Valid @RequestBody @NotNull TTLObjectDto ttlObjectDto) {
         checkNotBlank(key);
-        cache.add(key, ttlObjectDto.getObject());
+        cache.add(key, ttlObjectDto.getValue());
         return new ResponseEntity<>("Установлен ключ: " + key +
-                " со значением: " + ttlObjectDto.getObject(), HttpStatus.CREATED);
+                " со значением: " + ttlObjectDto.getValue(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("DEL")
     public ResponseEntity<Object> deleteObject(@RequestParam String key) {
+        checkNotBlank(key);
         return new ResponseEntity<>("Удален ключ: " + key +
-                " со значением: " + cache.delete(key).getObject(), HttpStatus.OK);
+                " со значением: " + cache.delete(key).getValue(), HttpStatus.OK);
     }
 }
