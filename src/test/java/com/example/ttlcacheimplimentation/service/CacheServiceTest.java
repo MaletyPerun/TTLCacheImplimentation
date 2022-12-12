@@ -13,16 +13,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Set;
 
-import static com.example.ttlcacheimplimentation.service.CacheServiceTestData.*;
+import static com.example.ttlcacheimplimentation.TestData.*;
 import static com.example.ttlcacheimplimentation.util.TimeUtil.getTimeStamp;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CacheServiceTest {
-
-//    @Autowired
-//    private CacheStore cacheStore;
 
     @Autowired
     private CacheService cacheService;
@@ -55,7 +52,7 @@ class CacheServiceTest {
 
     @Test
     void getKeys() {
-        assertEquals(SET_OF_KEYS_DATA, cacheService.getKeys(KEY));
+        assertEquals(KEYS_RESPONSE, cacheService.getKeys(KEY));
     }
 
     @Test
