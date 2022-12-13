@@ -25,25 +25,25 @@
 - Авторизация
 - Нагрузочные тесты
 
+------
 -------
 
 API:
 
-#### получить кэш с ключом {key}
+#### Получить кэш с ключом {key}
 `curl --location --request GET 'http://localhost:8080/GET?key={key}`
 
-#### записать кэш с ключом {TestKey} и значением {Test message}
-`curl --location --request POST 'http://localhost:8080/SET' \
+#### Записать кэш с ключом {key} и значением {String of value}
+`curl --location --request POST 'http://localhost:8080/SET?={key}' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-"count":"testCount",
-"strLine":"{TestKey} {Test message}"
+"value":"{String of value}"
 }'`
 
-#### получить список всех совпадений значений в кеше по ключу {key}
+#### Получить список всех совпадений значений в кеше по ключу {key}
 `curl --location --request GET 'http://localhost:8080/KEYS?key={key}'`
 
-#### удалить кеш по ключу {key}
+#### Удалить кеш по ключу {key}
 `curl --location --request DELETE 'http://localhost:8080/DEL?key={key}'`
 
-###### время жизни объектов (TTL) состовляет 20 секунд
+###### Время жизни объектов (TTL) составляет 5 секунд
